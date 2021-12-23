@@ -22,6 +22,11 @@ WEBDAV_PASSWORD = "webdav"
 RPS_HOSTS = "http://192.168.45.81:8889"
 RPS_URI = "/api/status/"
 
+#comma seperate values of RPS hosts
+# this needs to be /rcs/version not /rcs/version/ which returns a 401
+RCS_HOSTS = "http://192.168.45.81:8008"
+RCS_URI = "/rcs/version"
+
 #update interval in seconds between checks
 UPDATE = 10
 
@@ -56,6 +61,7 @@ def checkRWS(host, uri):
     else:
         print ("    RWS " + host + ": DOWN  -   ", end='') 
         print ("HTTP Status: " +str(rwsStatus) + " error: " + str(rwsData) )
+        print()
             
 
 # check invididual ES and print status
@@ -68,6 +74,8 @@ def checkES(host, uri):
     else:
         print ("    ES " + host + ": DOWN  -   ", end='') 
         print ("HTTP Status: " +str(esStatus) + " data: " + str(esData) )
+        print()
+        
         
         
 def checkWebdav(host, uri, username, password):
@@ -80,6 +88,8 @@ def checkWebdav(host, uri, username, password):
     else:
         print ("    WebDaV " + host + ": DOWN  -   ", end='') 
         print ("HTTP Status: " +str(webdavStatus) + " data: " + str(webdavData) )
+        print()
+        
 
 
 def checkRPS(host, uri):
@@ -91,11 +101,25 @@ def checkRPS(host, uri):
     else:
         print ("    RPS " + host + ": DOWN  -   ", end='') 
         print ("HTTP Status: " +str(rpsStatus) + " error: " + str(rpsData) )
+        print()
         
+      
+def checkRCS(host, uri):
+    
+    rcsStatus,rcsData = checkURL(host, uri, "", "")
+        
+    if rcsStatus == 200:
+        print ("    RCS " + host + ": UP")
+    else:
+        print("    RCS " + host + ": DOWN  -   ", end='') 
+        print("HTTP Status: " +str(rcsStatus) + " error: " + str(rcsData) )
+        print()
         
             
 while (1):
 
+    print()
+    
     print("Host status:")
     
     # check each RWS host
@@ -115,11 +139,20 @@ while (1):
     for host in webdavHosts:
         checkWebdav(host, WEBDAV_URI, WEBDAV_USERNAME, WEBDAV_PASSWORD)
     
+    ## check each RPS host
     rpsHosts = RPS_HOSTS.split(",")
     for host in rpsHosts:
         checkRPS(host, RPS_URI)
         
-    #time.sleep(UPDATE)
-    break
+        
+    ## check each RCS host
+    rcsHosts = RCS_HOSTS.split(",")
+    for host in rcsHosts:
+        checkRCS(host, RCS_URI)    
+    
+    print()
+    
+    time.sleep(UPDATE)
+    #break
      
      
