@@ -57,7 +57,7 @@ def printHostStatus(appname, hostname, httpStatus, httpData):
         print (appname + " " + hostname + ": UP", end='')
     else:
         print(appname + " " + hostname + ": DOWN  -   ", end='') 
-        print("HTTP Status: " +str(httpStatus) + " error: " + str(httpData[:300]) )
+        print("HTTP Status: " +str(httpStatus) + " error: " + str(httpData[:400]) )
         
 def printESClusterHealth(data):
     try: 
@@ -72,51 +72,56 @@ def printTime():
     
 while (1):
 
-    print("---- Host status:")
+    print("---- Host status ----")
     
     # check each RWS host
-    rwsHosts = RWS_HOSTS.split(",")
-    for host in rwsHosts:
-        printTime()
-        rwsStatus,rwsData = checkURL(host, RWS_URI, "", "")
-        printHostStatus("RWS", host, rwsStatus, rwsData)
-        print()
-        
+    if (RWS_HOSTS != ""):
+        rwsHosts = RWS_HOSTS.split(",")
+        for host in rwsHosts:
+            printTime()
+            rwsStatus,rwsData = checkURL(host, RWS_URI, "", "")
+            printHostStatus("RWS", host, rwsStatus, rwsData)
+            print()
+            
     ## check each ES host
-    esHosts = ES_HOSTS.split(",")
-    for host in esHosts:
-        printTime()
-        esStatus, esData = checkURL(host, ES_URI, "", "")
-        printHostStatus("ES", host, esStatus, esData)
-        printESClusterHealth(esData)
-                                
+    if (ES_HOSTS != ""):
+        esHosts = ES_HOSTS.split(",")
+        for host in esHosts:
+            printTime()
+            esStatus, esData = checkURL(host, ES_URI, "", "")
+            printHostStatus("ES", host, esStatus, esData)
+            printESClusterHealth(esData)
+                                    
     
     ## check each WebDAV host
-    webdavHosts = WEBDAV_HOSTS.split(",")
-    for host in webdavHosts:
-        printTime()
-        webdavStatus, webdavData = checkURL(host, WEBDAV_URI, WEBDAV_USERNAME, WEBDAV_PASSWORD)
-        printHostStatus("WebDAV", host, webdavStatus, webdavData)
-        print()
-                
+    if (WEBDAV_HOSTS != ""):
+        webdavHosts = WEBDAV_HOSTS.split(",")
+        for host in webdavHosts:
+            printTime()
+            webdavStatus, webdavData = checkURL(host, WEBDAV_URI, WEBDAV_USERNAME, WEBDAV_PASSWORD)
+            printHostStatus("WebDAV", host, webdavStatus, webdavData)
+            print()
+                    
     
     ## check each RPS host
-    rpsHosts = RPS_HOSTS.split(",")
-    for host in rpsHosts:
-        printTime()
-        rpsStatus,rpsData = checkURL(host, RPS_URI, "", "")
-        printHostStatus("RPS", host, rpsStatus, rpsData)
-        print()
-        
+    if (RPS_HOSTS != ""):
+        rpsHosts = RPS_HOSTS.split(",")
+        for host in rpsHosts:
+            printTime()
+            rpsStatus,rpsData = checkURL(host, RPS_URI, "", "")
+            printHostStatus("RPS", host, rpsStatus, rpsData)
+            print()
+            
         
     ## check each RCS host
-    rcsHosts = RCS_HOSTS.split(",")
-    for host in rcsHosts:
-        printTime()
-        rcsStatus, rcsData = checkURL(host, RCS_URI, "", "")
-        printHostStatus("RCS", host, rcsStatus, rcsData)
-        print()
-        
+    if (RCS_HOSTS != ""):
+        rcsHosts = RCS_HOSTS.split(",")
+        for host in rcsHosts:
+            printTime()
+            rcsStatus, rcsData = checkURL(host, RCS_URI, "", "")
+            printHostStatus("RCS", host, rcsStatus, rcsData)
+            print()
+            
     
     print("\n\n")
     
