@@ -8,7 +8,7 @@ import time
 RWS_HOSTS = "http://192.168.45.81:8080"
 RWS_URI = "/api/v2/diagnostics/version"
 RWS_CALL_URI = "/api/v2/recordings"
-RWS_SCREEN_URI = "/api/v2/screen-recordings"
+RWS_SCREEN_URI = "/internal-api/screen-recordings"
 RWS_USER = "jbaird"
 RWS_PASS = "iihbdidj"
 
@@ -36,6 +36,7 @@ VP_URI = "/api/status?verbose=1"
 
 # what times to total for new calls coming in
 CALL_TOTALS = [15, 30, 60, 180, 240]
+SCREEN_TOTALS = [15, 30, 60, 180, 240]
 
 #update interval in seconds between checks
 UPDATE = 10
@@ -94,10 +95,9 @@ def printCallTotals(host, uri, lastmin, user, passw):
             data = json.loads(rwsData)
             print(str(len(data["recordings"])) + " recordings in the last " + str(lastmin) + " minutes")
     except Exception as e:
-        print(e)
+        print("Error parsing json from " + query)
    
-    
-   
+
     
 while (1):
 
@@ -168,9 +168,12 @@ while (1):
         
         printTime()
         print("RWS " + RWS_HOSTS.split(",")[0])
+        print("Calls")
         for x in CALL_TOTALS: printCallTotals(RWS_HOSTS.split(",")[0], RWS_CALL_URI, x, RWS_USER, RWS_PASS)
+        print("Screens")
+        for x in SCREEN_TOTALS: printCallTotals(RWS_HOSTS.split(",")[0], RWS_SCREEN_URI, x, RWS_USER, RWS_PASS)
+        print ("totals limited to 100")
         
-    
     time.sleep(UPDATE)
     #break
      
