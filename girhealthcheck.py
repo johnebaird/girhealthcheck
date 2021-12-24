@@ -7,6 +7,10 @@ import time
 # comma seperate values of RWS hosts 
 RWS_HOSTS = "http://192.168.45.81:8080"
 RWS_URI = "/api/v2/diagnostics/version"
+RWS_CALL_URI = "/api/v2/recordings"
+RWS_SCREEN_URI = "/api/v2/screen-recordings"
+RWS_USER = "jbaird"
+RWS_PASS = "iihbdidj"
 
 # comma seperated values of ES hosts 
 ES_HOSTS = "http://192.168.45.81:9200,http://192.168.45.83:9200"
@@ -15,8 +19,8 @@ ES_URI = "/_cluster/health"
 #command seperated values of WebDAV 
 WEBDAV_HOSTS = "http://192.168.45.81"
 WEBDAV_URI = "/recordings/"
-WEBDAV_USERNAME = "webdav"
-WEBDAV_PASSWORD = "webdav"
+WEBDAV_USER = "webdav"
+WEBDAV_PASS = "webdav"
 
 #comma seperate values of RPS hosts
 RPS_HOSTS = "http://192.168.45.81:8889"
@@ -26,6 +30,12 @@ RPS_URI = "/api/status/"
 # this needs to be /rcs/version not /rcs/version/ which returns a 401
 RCS_HOSTS = "http://192.168.45.81:8008"
 RCS_URI = "/rcs/version"
+
+VP_HOSTS = ""
+VP_URI = "/api/status?verbose=1"
+
+# what times to total for new calls coming in
+CALL_TOTALS = [15, 30, 60, 180, 240]
 
 #update interval in seconds between checks
 UPDATE = 10
@@ -66,13 +76,32 @@ def printESClusterHealth(data):
         return
     else:
       print ("    Cluster Status: " + health['status'])
-      
+
+## add timestamp to start of all logged lines
 def printTime():
     print(time.strftime('%d/%m/%Y %H:%M:%S', time.localtime()) + " UTC " + time.strftime('%H:%M:%S - ',time.gmtime()), end='')
+
+## print calls int he last x minutes defined by lastmin    
+def printCallTotals(host, uri, lastmin, user, passw):
+    now = round(time.time() * 1000)
+    before = now - (lastmin * 60000)
+    query = uri + "?startTime=" + str(before)
+          
+    rwsStatus, rwsData = checkURL(host, query, user, passw)
+    
+    try:
+        if rwsStatus == 200:
+            data = json.loads(rwsData)
+            print(str(len(data["recordings"])) + " recordings in the last " + str(lastmin) + " minutes")
+    except Exception as e:
+        print(e)
+   
+    
+   
     
 while (1):
 
-    print("---- Host status ----")
+    print("\n---- Host status ----")
     
     # check each RWS host
     if (RWS_HOSTS != ""):
@@ -98,7 +127,7 @@ while (1):
         webdavHosts = WEBDAV_HOSTS.split(",")
         for host in webdavHosts:
             printTime()
-            webdavStatus, webdavData = checkURL(host, WEBDAV_URI, WEBDAV_USERNAME, WEBDAV_PASSWORD)
+            webdavStatus, webdavData = checkURL(host, WEBDAV_URI, WEBDAV_USER, WEBDAV_PASS)
             printHostStatus("WebDAV", host, webdavStatus, webdavData)
             print()
                     
@@ -122,10 +151,27 @@ while (1):
             printHostStatus("RCS", host, rcsStatus, rcsData)
             print()
             
+    ## Check each VP host
+    if (VP_HOSTS != ""):
+        vpHosts = VP_HOSTS.split(",")
+        for host in vpHosts:
+            printTime()
+            vpStatus, vpData = checkURL(host, VP_URI, "", "")
+            printHostStatus("VP", host, vpStatus, vpData)
+            print()
     
-    print("\n\n")
     
-    #time.sleep(UPDATE)
-    break
+    print()
+    
+    if (RWS_HOSTS != ""):
+        print("---- Call status ----")
+        
+        printTime()
+        print("RWS " + RWS_HOSTS.split(",")[0])
+        for x in CALL_TOTALS: printCallTotals(RWS_HOSTS.split(",")[0], RWS_CALL_URI, x, RWS_USER, RWS_PASS)
+        
+    
+    time.sleep(UPDATE)
+    #break
      
      
