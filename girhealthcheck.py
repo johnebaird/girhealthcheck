@@ -54,26 +54,30 @@ def checkURL(host, uri, username, password):
 def printHostStatus(appname, hostname, httpStatus, httpData):
     
     if httpStatus >= 200 and httpStatus < 400:
-        print ("    " + appname + " " + hostname + ": UP", end='')
+        print (appname + " " + hostname + ": UP", end='')
     else:
-        print("    " + appname + " " + hostname + ": DOWN  -   ", end='') 
+        print(appname + " " + hostname + ": DOWN  -   ", end='') 
         print("HTTP Status: " +str(httpStatus) + " error: " + str(httpData[:300]) )
         
-
-
 def printESClusterHealth(data):
-    health = json.loads(data)
-    if health:
+    try: 
+      health = json.loads(data)
+    except:
+        return
+    else:
       print ("    Cluster Status: " + health['status'])
       
+def printTime():
+    print(time.strftime('%d/%m/%Y %H:%M:%S', time.localtime()) + " UTC " + time.strftime('%H:%M:%S - ',time.gmtime()), end='')
     
 while (1):
 
-    print(time.strftime('%d/%m/%Y %H:%M:%S', time.localtime()) + " UTC " + time.strftime('%H:%M',time.gmtime()) + " -- Host status:")
+    print("---- Host status:")
     
     # check each RWS host
     rwsHosts = RWS_HOSTS.split(",")
     for host in rwsHosts:
+        printTime()
         rwsStatus,rwsData = checkURL(host, RWS_URI, "", "")
         printHostStatus("RWS", host, rwsStatus, rwsData)
         print()
@@ -81,6 +85,7 @@ while (1):
     ## check each ES host
     esHosts = ES_HOSTS.split(",")
     for host in esHosts:
+        printTime()
         esStatus, esData = checkURL(host, ES_URI, "", "")
         printHostStatus("ES", host, esStatus, esData)
         printESClusterHealth(esData)
@@ -89,6 +94,7 @@ while (1):
     ## check each WebDAV host
     webdavHosts = WEBDAV_HOSTS.split(",")
     for host in webdavHosts:
+        printTime()
         webdavStatus, webdavData = checkURL(host, WEBDAV_URI, WEBDAV_USERNAME, WEBDAV_PASSWORD)
         printHostStatus("WebDAV", host, webdavStatus, webdavData)
         print()
@@ -97,15 +103,16 @@ while (1):
     ## check each RPS host
     rpsHosts = RPS_HOSTS.split(",")
     for host in rpsHosts:
+        printTime()
         rpsStatus,rpsData = checkURL(host, RPS_URI, "", "")
         printHostStatus("RPS", host, rpsStatus, rpsData)
         print()
         
         
-        
     ## check each RCS host
     rcsHosts = RCS_HOSTS.split(",")
     for host in rcsHosts:
+        printTime()
         rcsStatus, rcsData = checkURL(host, RCS_URI, "", "")
         printHostStatus("RCS", host, rcsStatus, rcsData)
         print()
