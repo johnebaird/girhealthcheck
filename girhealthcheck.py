@@ -1,38 +1,39 @@
+import os
 import re
 import json
 import requests
 from requests.auth import HTTPBasicAuth
 import time
 
-# comma seperate values of RWS hosts 
-RWS_HOSTS = "http://192.168.45.81:8080"
-RWS_URI = "/api/v2/diagnostics/version"
-RWS_CALL_URI = "/api/v2/recordings"
-RWS_SCREEN_URI = "/internal-api/screen-recordings"
-RWS_USER = "jbaird"
-RWS_PASS = "iihbdidj"
+# comma seperate values of RWS/ES/WEBDAV/RPS/RCS/VP hosts to check pulled from environment variables
+# *_HOSTS can support multiple hosts if seperated by commas, in case of RWS/ES the first host is also used to query for call totals
+# *_URI can be overridden by environment vars if needed for some reason
+# RWS_USER / WEBDAV_USER needs to be set for authentication for these services
 
-# comma seperated values of ES hosts 
-ES_HOSTS = "http://192.168.45.81:9200,http://192.168.45.83:9200"
-ES_URI = "/_cluster/health"
+RWS_HOSTS = os.getenv('RWS_HOSTS')
+RWS_URI = os.getenv('RWS_URI', "/api/v2/diagnostics/version")
+RWS_CALL_URI = os.getenv('RWS_CALL_URI', "/api/v2/recordings")
+RWS_SCREEN_URI = os.getenv('RWS_SCREEN_URI', "/internal-api/screen-recordings")
+RWS_USER = os.getenv('RWS_USER')
+RWS_PASS = os.getenv('RWS_PASS')
 
-#command seperated values of WebDAV 
-WEBDAV_HOSTS = "http://192.168.45.81"
-WEBDAV_URI = "/recordings/"
-WEBDAV_USER = "webdav"
-WEBDAV_PASS = "webdav"
+ES_HOSTS = os.getenv('ES_HOSTS')
+ES_URI = os.getenv('ES_URI', "/_cluster/health")
 
-#comma seperate values of RPS hosts
-RPS_HOSTS = "http://192.168.45.81:8889"
-RPS_URI = "/api/status/"
+WEBDAV_HOSTS = os.getenv('WEBDAV_HOSTS')
+WEBDAV_URI = os.getenv('WEBDAV_URI', "/recordings/")
+WEBDAV_USER = os.getenv('WEBDAV_USER')
+WEBDAV_PASS = os.getenv('WEBDAV_PASS')
 
-#comma seperate values of RPS hosts
-# this needs to be /rcs/version not /rcs/version/ which returns a 401
-RCS_HOSTS = "http://192.168.45.81:8008"
-RCS_URI = "/rcs/version"
+RPS_HOSTS = os.getenv('RPS_HOSTS')
+RPS_URI = os.getenv('RPS_URI', "/api/status/")
 
-VP_HOSTS = ""
-VP_URI = "/api/status?verbose=1"
+# RCS_URI needs to be /rcs/version which returns a 200 not /rcs/version/ which returns a 401
+RCS_HOSTS = os.getenv('RCS_HOSTS')
+RCS_URI = os.getenv('RCS_URI', "/rcs/version")
+
+VP_HOSTS = os.getenv('VP_HOSTS')
+VP_URI = os.getenv('VP_URI', "/api/status?verbose=1")
 
 # what times to total for new calls coming in
 CALL_TOTALS = [15, 30, 60, 180, 240]
@@ -104,7 +105,7 @@ while (1):
     print("\n---- Host status ----")
     
     # check each RWS host
-    if (RWS_HOSTS != ""):
+    if (RWS_HOSTS != None):
         rwsHosts = RWS_HOSTS.split(",")
         for host in rwsHosts:
             printTime()
@@ -113,7 +114,7 @@ while (1):
             print()
             
     ## check each ES host
-    if (ES_HOSTS != ""):
+    if (ES_HOSTS != None):
         esHosts = ES_HOSTS.split(",")
         for host in esHosts:
             printTime()
@@ -123,7 +124,7 @@ while (1):
                                     
     
     ## check each WebDAV host
-    if (WEBDAV_HOSTS != ""):
+    if (WEBDAV_HOSTS != None):
         webdavHosts = WEBDAV_HOSTS.split(",")
         for host in webdavHosts:
             printTime()
@@ -133,7 +134,7 @@ while (1):
                     
     
     ## check each RPS host
-    if (RPS_HOSTS != ""):
+    if (RPS_HOSTS != None):
         rpsHosts = RPS_HOSTS.split(",")
         for host in rpsHosts:
             printTime()
@@ -143,7 +144,7 @@ while (1):
             
         
     ## check each RCS host
-    if (RCS_HOSTS != ""):
+    if (RCS_HOSTS != None):
         rcsHosts = RCS_HOSTS.split(",")
         for host in rcsHosts:
             printTime()
@@ -152,7 +153,7 @@ while (1):
             print()
             
     ## Check each VP host
-    if (VP_HOSTS != ""):
+    if (VP_HOSTS != None):
         vpHosts = VP_HOSTS.split(",")
         for host in vpHosts:
             printTime()
@@ -163,7 +164,7 @@ while (1):
     
     print()
     
-    if (RWS_HOSTS != ""):
+    if (RWS_HOSTS != None):
         print("---- Call status ----")
         
         printTime()
