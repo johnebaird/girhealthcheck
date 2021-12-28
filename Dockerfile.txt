@@ -1,0 +1,14 @@
+FROM scratch
+
+USER nobody
+
+COPY girhealthcheck.py /
+
+ENTRYPOINT ["python /girhealthcheck.py"]
+
+RUN apt-get update && apt-get install -y \
+    python \
+	&& rm -rf /var/lib/apt/lists/*
+	
+	
+CMD ["girhealthcheck"]
