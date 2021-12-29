@@ -4,9 +4,9 @@ MAINTAINER John Baird <john_baird@genesys.com>
 
 COPY girhealthcheck.py .
 
-#RUN useradd -r -g users pythonuser
+RUN useradd -m -r -g users pythonuser
 
-#USER pythonuser
+USER pythonuser
 
 RUN apt-get update \
     && python -m pip install --upgrade pip \
