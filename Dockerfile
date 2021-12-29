@@ -1,9 +1,15 @@
-FROM ubuntu:latest
+FROM python:3 
+
+MAINTAINER John Baird <john_baird@genesys.com>
 
 COPY girhealthcheck.py .
 
-RUN apt-get update && apt-get install -y \
-    python \
-	&& rm -rf /var/lib/apt/lists/*
-	
+#RUN useradd -r -g users pythonuser
 
+#USER pythonuser
+
+RUN apt-get update \
+    && python -m pip install --upgrade pip \
+    && pip install requests --no-cache-dir
+	
+CMD ["python", "girhealthcheck.py"]
