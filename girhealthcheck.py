@@ -9,6 +9,7 @@ import time
 # *_HOSTS can support multiple hosts if seperated by commas, in case of RWS/ES the first host is also used to query for call totals
 # *_URI can be overridden by environment vars if needed for some reason
 # RWS_USER / WEBDAV_USER needs to be set for authentication for these services
+#
 
 RWS_HOSTS = os.getenv('RWS_HOSTS')
 RWS_URI = os.getenv('RWS_URI', "/api/v2/diagnostics/version")
