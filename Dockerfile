@@ -4,12 +4,13 @@ MAINTAINER John Baird <john_baird@genesys.com>
 
 COPY girhealthcheck.py .
 
+RUN apt-get update
+
 RUN useradd -m -r -g users pythonuser
 
 USER pythonuser
 
-RUN apt-get update \
-    && python -m pip install --upgrade pip \
+RUN python -m pip install --upgrade pip \
     && pip install requests --no-cache-dir
 	
 CMD ["python", "girhealthcheck.py"]
