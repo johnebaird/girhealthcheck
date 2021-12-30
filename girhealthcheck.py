@@ -40,7 +40,7 @@ CALL_TOTALS = [15, 30, 60, 180, 240]
 SCREEN_TOTALS = [15, 30, 60, 180, 240]
 
 #update interval in seconds between checks
-UPDATE = 10
+UPDATE = 15
 
 # Take a host and a URI and return appropriate HTTP status code and successful json or error messages
 def checkURL(host, uri, username, password):
