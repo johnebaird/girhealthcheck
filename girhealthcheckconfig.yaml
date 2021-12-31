@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: girhealthcheck-conf
+data:
+  rws_hosts: "http://192.168.45.81:8080"
+  es_hosts: "http://192.168.45.81:9200,http://192.168.45.83:9200"
+  webdav_hosts: "http://192.168.45.81"
+  rps_hosts: "http://192.168.45.81:8889"
+  rcs_hosts: "http://192.168.45.81:8008"
+
+

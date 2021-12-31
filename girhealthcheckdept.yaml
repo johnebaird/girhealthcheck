@@ -21,22 +21,49 @@ spec:
         - name: PYTHONUNBUFFERED
           value: "1"
         - name: RWS_HOSTS
-          value: "http://192.168.45.81:8080"
+          valueFrom:
+            configMapKeyRef:
+              name: girhealthcheck-conf
+              key: rws_hosts
         - name: RWS_USER
-          value: "jbaird"
+          valueFrom:
+            secretKeyRef:
+              name: girhealthcheck-secret
+              key: rws_user
         - name: RWS_PASS
-          value: "iihbdidj"
+          valueFrom:
+            secretKeyRef:
+              name: girhealthcheck-secret
+              key: rws_pass
         - name: ES_HOSTS
-          value: "http://192.168.45.81:9200,http://192.168.45.83:9200"
+          valueFrom:
+            configMapKeyRef:
+              name: girhealthcheck-conf
+              key: es_hosts
         - name: WEBDAV_HOSTS
-          value: "http://192.168.45.80"
+          valueFrom:
+            configMapKeyRef:
+              name: girhealthcheck-conf
+              key: webdav_hosts
         - name: WEBDAV_USER
-          value: "webdav"
+          valueFrom:
+            secretKeyRef:
+              name: girhealthcheck-secret
+              key: webdav_user
         - name: WEBDAV_PASS
-          value: "webdav"
+          valueFrom:
+            secretKeyRef:
+              name: girhealthcheck-secret
+              key: webdav_pass
         - name: RPS_HOSTS
-          value: "http://192.168.45.81:8889"
+          valueFrom:
+            configMapKeyRef:
+              name: girhealthcheck-conf
+              key: rps_hosts
         - name: RCS_HOSTS
-          value: "http://192.168.45.81:8008"
+          valueFrom:
+            configMapKeyRef:
+              name: girhealthcheck-conf
+              key: rcs_hosts
 
 
