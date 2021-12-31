@@ -1,6 +1,6 @@
 FROM python:3 
 
-MAINTAINER John Baird <john_baird@genesys.com>
+MAINTAINER John Baird <john.baird@genesys.com>
 
 COPY girhealthcheck.py .
 
