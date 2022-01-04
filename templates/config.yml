@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: girhealthcheck-conf
+data:
+  rws_hosts: {{ .Values.rws_hosts }}
+  es_hosts: {{ .Values.es_hosts }}
+  webdav_hosts: {{ .Values.webdav_hosts }}
+  rps_hosts: {{ .Values.rps_hosts }}
+  rcs_hosts: {{ .Values.rcs_hosts }}
+
+

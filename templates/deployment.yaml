@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "girhealthcheck.fullname" . }}
+  labels:
+    {{- include "girhealthcheck.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "girhealthcheck.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "girhealthcheck.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "girhealthcheck.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+                  - name: PYTHONUNBUFFERED
+                    value: "1"
+                  - name: RWS_HOSTS
+                    valueFrom:
+                            configMapKeyRef:
+                                    name: {{ .Release.Name }}-conf
+                                    key: rws_hosts
+                  - name: RWS_USER
+                    valueFrom:
+                            secretKeyRef:
+                                    name: {{ .Release.Name }}-secret
+                                    key: rws_user
+                  - name: RWS_PASS
+                    valueFrom:
+                            secretKeyRef:
+                                    name: {{ .Release.Name }}-secret
+                                    key: rws_pass
+                  - name: ES_HOSTS
+                    valueFrom:
+                            configMapKeyRef:
+                                    name: {{ .Release.Name }}-conf
+                                    key: es_hosts
+                  - name: WEBDAV_HOSTS
+                    valueFrom:
+                            configMapKeyRef:
+                                    name: {{ .Release.Name }}-conf
+                                    key: webdav_hosts
+                  - name: WEBDAV_USER
+                    valueFrom:
+                            secretKeyRef:
+                                    name: {{ .Release.Name }}-secret
+                                    key: webdav_user
+                  - name: WEBDAV_PASS
+                    valueFrom:
+                            secretKeyRef:
+                                    name: {{ .Release.Name }}-secret
+                                    key: webdav_pass
+                  - name: RPS_HOSTS
+                    valueFrom:
+                            configMapKeyRef:
+                                    name: {{ .Release.Name }}-conf
+                                    key: rps_hosts
+                  - name: RCS_HOSTS
+                    valueFrom:
+                            configMapKeyRef:
+                                    name: {{ .Release.Name }}-conf
+                                    key: rcs_hosts
+
+          #ports:
+          #- name: http
+          #containerPort: 80
+          #protocol: TCP
+              #livenessProbe:
+              #httpGet:
+              #path: /
+              #port: http
+              #readinessProbe:
+              #httpGet:
+              #path: /
+              #port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

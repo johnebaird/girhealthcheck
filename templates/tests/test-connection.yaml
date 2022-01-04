@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "girhealthcheck.fullname" . }}-test-connection"
+  labels:
+    {{- include "girhealthcheck.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "girhealthcheck.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
