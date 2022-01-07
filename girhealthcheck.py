@@ -193,16 +193,19 @@ while (1):
     
     print()
     
-    if (RWS_HOSTS != None):
-        print("---- Call status ----")
-        
-        printTime()
-        print("RWS " + RWS_HOSTS.split(",")[0])
-        print("Calls")
-        for x in CALL_TOTALS: printCallTotals(RWS_HOSTS.split(",")[0], RWS_CALL_URI, x, RWS_USER, RWS_PASS)
-        print("Screens")
-        for x in SCREEN_TOTALS: printCallTotals(RWS_HOSTS.split(",")[0], RWS_SCREEN_URI, x, RWS_USER, RWS_PASS)
-        print ("totals limited to 100")
+    if (RWS_HOSTS != None and RWS_HOSTS != 'none'):
+        rwshost = RWS_HOSTS.split(",")[0]
+        if rwshost[:7] == 'http://' or rwshost[:8] == 'https://':
+            print("---- Call status ----")
+            printTime()
+            print("RWS " + RWS_HOSTS.split(",")[0])
+            print("Calls")
+            for x in CALL_TOTALS: printCallTotals(RWS_HOSTS.split(",")[0], RWS_CALL_URI, x, RWS_USER, RWS_PASS)
+            print("Screens")
+            for x in SCREEN_TOTALS: printCallTotals(RWS_HOSTS.split(",")[0], RWS_SCREEN_URI, x, RWS_USER, RWS_PASS)
+            print ("totals limited to 100")
+        else:
+            print ("invalid RWS host for pulling call stats " + rwshost + " Should start with http:// or https://")
                 
     time.sleep(UPDATE)
     
