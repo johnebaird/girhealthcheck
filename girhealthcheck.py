@@ -79,6 +79,16 @@ def printESClusterHealth(data):
     else:
       print ("    Cluster Status: " + health['status'])
 
+def printVPData(data):
+    try:
+        status = json.loads(data)
+    except:
+        return
+    else:
+        print("    status:" + status['status'] + "    nominal status:" + status['nominalStatus'] + "    operational status:" + status['operationalStatus'] + "    recording in process:" + str(status['recordingsInProcess']))
+        
+     
+        
 ## add timestamp to start of all logged lines
 def printTime():
     print(time.strftime('%d/%m/%Y %H:%M:%S', time.localtime()) + " UTC " + time.strftime('%H:%M:%S - ',time.gmtime()), end='')
@@ -98,67 +108,86 @@ def printCallTotals(host, uri, lastmin, user, passw):
     except Exception as e:
         print("Error parsing json from " + query)
    
-
-    
+   
 while (1):
 
     print("\n---- Host status ----")
     
     # check each RWS host
-    if (RWS_HOSTS != None):
+    # added option to set var to 'none' as helm3 doesn't like setting var blank that was previously set
+    if (RWS_HOSTS != None and RWS_HOSTS != 'none' ):
         rwsHosts = RWS_HOSTS.split(",")
         for host in rwsHosts:
             printTime()
-            rwsStatus,rwsData = checkURL(host, RWS_URI, "", "")
-            printHostStatus("RWS", host, rwsStatus, rwsData)
+            if host[:7] == 'http://' or host[:8] == 'https://':
+                rwsStatus,rwsData = checkURL(host, RWS_URI, "", "")
+                printHostStatus("RWS", host, rwsStatus, rwsData)
+            else:
+                print("invalid RWS host " + host + " Should start with http:// or https://")
             print()
             
     ## check each ES host
-    if (ES_HOSTS != None):
+    if (ES_HOSTS != None and ES_HOSTS != 'none'):
         esHosts = ES_HOSTS.split(",")
         for host in esHosts:
             printTime()
-            esStatus, esData = checkURL(host, ES_URI, "", "")
-            printHostStatus("ES", host, esStatus, esData)
-            printESClusterHealth(esData)
+            if host[:7] == 'http://' or host[:8] == 'https://':
+                esStatus, esData = checkURL(host, ES_URI, "", "")
+                printHostStatus("ES", host, esStatus, esData)
+                printESClusterHealth(esData)
+            else:
+                print("invalid ES host " + host + " Should start with http:// or https://")    
                                     
     
     ## check each WebDAV host
-    if (WEBDAV_HOSTS != None):
+    if (WEBDAV_HOSTS != None and WEBDAV_HOSTS != 'none'):
         webdavHosts = WEBDAV_HOSTS.split(",")
         for host in webdavHosts:
             printTime()
-            webdavStatus, webdavData = checkURL(host, WEBDAV_URI, WEBDAV_USER, WEBDAV_PASS)
-            printHostStatus("WebDAV", host, webdavStatus, webdavData)
+            if host[:7] == 'http://' or host[:8] == 'https://':
+                webdavStatus, webdavData = checkURL(host, WEBDAV_URI, WEBDAV_USER, WEBDAV_PASS)
+                printHostStatus("WebDAV", host, webdavStatus, webdavData)
+            else:
+                print("invalid WebDAV host " + host + " Should start with http:// or https://")        
             print()
                     
     
     ## check each RPS host
-    if (RPS_HOSTS != None):
+    if (RPS_HOSTS != None and RPS_HOSTS != 'none'):
         rpsHosts = RPS_HOSTS.split(",")
         for host in rpsHosts:
             printTime()
-            rpsStatus,rpsData = checkURL(host, RPS_URI, "", "")
-            printHostStatus("RPS", host, rpsStatus, rpsData)
+            if host[:7] == 'http://' or host[:8] == 'https://':
+                rpsStatus,rpsData = checkURL(host, RPS_URI, "", "")
+                printHostStatus("RPS", host, rpsStatus, rpsData)
+            else:
+                print("invalid RPS host " + host + " Should start with http:// or https://") 
             print()
             
         
     ## check each RCS host
-    if (RCS_HOSTS != None):
+    if (RCS_HOSTS != None and RCS_HOSTS != 'none'):
         rcsHosts = RCS_HOSTS.split(",")
         for host in rcsHosts:
             printTime()
-            rcsStatus, rcsData = checkURL(host, RCS_URI, "", "")
-            printHostStatus("RCS", host, rcsStatus, rcsData)
+            if host[:7] == 'http://' or host[:8] == 'https://':
+                rcsStatus, rcsData = checkURL(host, RCS_URI, "", "")
+                printHostStatus("RCS", host, rcsStatus, rcsData)
+            else:
+                print("invalid RCS host " + host + " Should start with http:// or https://") 
             print()
             
     ## Check each VP host
-    if (VP_HOSTS != None):
+    if (VP_HOSTS != None and VP_HOSTS != 'none'):
         vpHosts = VP_HOSTS.split(",")
         for host in vpHosts:
             printTime()
-            vpStatus, vpData = checkURL(host, VP_URI, "", "")
-            printHostStatus("VP", host, vpStatus, vpData)
+            if host[:7] == 'http://' or host[:8] == 'https://':
+                vpStatus, vpData = checkURL(host, VP_URI, "", "")
+                printHostStatus("VP", host, vpStatus, vpData)
+                printVPData(vpData)
+            else:
+                print("invalid VP host " + host + " Should start with http:// or https://") 
             print()
     
     
@@ -174,8 +203,8 @@ while (1):
         print("Screens")
         for x in SCREEN_TOTALS: printCallTotals(RWS_HOSTS.split(",")[0], RWS_SCREEN_URI, x, RWS_USER, RWS_PASS)
         print ("totals limited to 100")
-        
+                
     time.sleep(UPDATE)
-    #break
+    
      
      
