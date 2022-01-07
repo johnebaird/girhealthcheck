@@ -89,7 +89,11 @@ spec:
                             configMapKeyRef:
                                     name: {{ .Release.Name }}-conf
                                     key: rcs_hosts
-
+                  - name: VP_HOSTS
+                    valueFrom:
+                            configMapKeyRef:
+                                    name: {{ .Release.Name }}-conf
+                                    key: vp_hosts
           #ports:
           #- name: http
           #containerPort: 80

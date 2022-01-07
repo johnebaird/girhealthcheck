@@ -8,5 +8,5 @@ data:
   webdav_hosts: {{ .Values.webdav_hosts }}
   rps_hosts: {{ .Values.rps_hosts }}
   rcs_hosts: {{ .Values.rcs_hosts }}
-
+  vp_hosts: {{ .Values.vp_hosts }}
 
