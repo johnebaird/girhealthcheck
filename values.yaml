@@ -89,7 +89,7 @@ es_hosts: http://192.168.45.81:9200,http://192.168.45.83:9200
 webdav_hosts: http://192.168.45.81
 webdav_user: webdav
 webdav_pass: webdav
-vp_hosts: http://192.168.45.81:8889
+vp_hosts: http://192.168.45.81:8889 
 rps_hosts: none 
 rcs_hosts: http://192.168.45.81:8008
 
