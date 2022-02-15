@@ -82,14 +82,14 @@ tolerations: []
 
 affinity: {}
 
-rws_hosts: 
-rws_user: 
-rws_pass: 
-es_hosts: 
-webdav_hosts: 
-webdav_user: 
-webdav_pass: 
-vp_hosts: 
-rps_hosts: 
-rcs_hosts: 
+rws_hosts: "http://hostname:8080" 
+rws_user: "user"
+rws_pass: "password"
+es_hosts: "http://eshost:9200"
+webdav_hosts: "http://webdav"
+webdav_user: "user"
+webdav_pass: "pass"
+vp_hosts: "http://vphost"
+rps_hosts: "http://rpshost"
+rcs_hosts: "http://rcshost"
 
