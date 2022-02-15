@@ -82,14 +82,14 @@ tolerations: []
 
 affinity: {}
 
-rws_hosts: http://192.168.45.81:8080
-rws_user: jbaird
-rws_pass: iihbdidj
-es_hosts: http://192.168.45.81:9200,http://192.168.45.83:9200
-webdav_hosts: http://192.168.45.81
-webdav_user: webdav
-webdav_pass: webdav
-vp_hosts: http://192.168.45.81:8889 
-rps_hosts: none 
-rcs_hosts: http://192.168.45.81:8008
+rws_hosts: 
+rws_user: 
+rws_pass: 
+es_hosts: 
+webdav_hosts: 
+webdav_user: 
+webdav_pass: 
+vp_hosts: 
+rps_hosts: 
+rcs_hosts: 
 
